@@ -9,4 +9,4 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "studio-esami-db"
-database_id = "INSERISCI_QUI_IL_DATABASE_ID"
+database_id = "c873c0a6-7119-4209-a70a-36164fe927bf"
