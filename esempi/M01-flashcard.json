@@ -1,0 +1,11 @@
+{
+  "versione_schema": 1,
+  "tipo_file": "flashcard",
+  "esame": "Fisica 1",
+  "modulo_codice": "M01",
+  "modulo_nome": "Cinematica",
+  "elementi": [
+    { "id": "M01-FC-001", "fronte": "Definizione di velocità media", "retro": "$v_m = \\frac{\\Delta x}{\\Delta t}$: spostamento diviso intervallo di tempo.", "tag": ["velocità"] },
+    { "id": "M01-FC-002", "fronte": "Legge oraria del moto uniformemente accelerato", "retro": "$x(t) = x_0 + v_0 t + \\frac{1}{2} a t^2$, valida solo con $a$ costante.", "tag": ["moto accelerato"] }
+  ]
+}

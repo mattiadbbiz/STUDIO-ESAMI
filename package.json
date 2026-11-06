@@ -1,0 +1,12 @@
+{
+  "name": "studio-esami",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:init": "wrangler d1 execute studio-esami-db --remote --file=./schema.sql",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

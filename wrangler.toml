@@ -1,0 +1,12 @@
+name = "studio-esami"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "studio-esami-db"
+database_id = "INSERISCI_QUI_IL_DATABASE_ID"

@@ -1,0 +1,10 @@
+{
+  "versione_schema": 1,
+  "tipo_file": "moduli",
+  "esame": "Fisica 1",
+  "generato_il": "2026-11-06",
+  "moduli": [
+    { "codice": "M01", "nome": "Cinematica", "descrizione": "Moto in una e due dimensioni", "ordine": 1 },
+    { "codice": "M02", "nome": "Dinamica del punto", "descrizione": "Leggi di Newton e forze", "ordine": 2 }
+  ]
+}

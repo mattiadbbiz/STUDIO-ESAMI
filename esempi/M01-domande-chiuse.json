@@ -1,0 +1,11 @@
+{
+  "versione_schema": 1,
+  "tipo_file": "domande_chiuse",
+  "esame": "Fisica 1",
+  "modulo_codice": "M01",
+  "modulo_nome": "Cinematica",
+  "elementi": [
+    { "id": "M01-DC-001", "formato": "scelta_multipla", "domanda": "Un corpo lanciato verso l'alto raggiunge il punto più alto. In quell'istante:", "opzioni": ["velocità e accelerazione sono nulle", "l'accelerazione è nulla", "la velocità è nulla, l'accelerazione è g", "la velocità è massima"], "corretta": 2, "spiegazione": "La gravità agisce sempre: l'accelerazione resta g verso il basso, si annulla solo la velocità.", "tag": ["caduta libera"] },
+    { "id": "M01-DC-002", "formato": "vero_falso", "domanda": "Nel moto rettilineo uniforme l'accelerazione è nulla.", "opzioni": ["Vero", "Falso"], "corretta": 0, "spiegazione": "La velocità è costante, quindi $a = dv/dt = 0$.", "tag": ["moto uniforme"] }
+  ]
+}

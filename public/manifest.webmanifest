@@ -1,0 +1,9 @@
+{
+  "name": "Studio Esami",
+  "short_name": "Studio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F6F7F9",
+  "theme_color": "#2F5BEA",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

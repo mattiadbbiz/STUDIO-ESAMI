@@ -1,0 +1,10 @@
+{
+  "versione_schema": 1,
+  "tipo_file": "domande_aperte",
+  "esame": "Fisica 1",
+  "modulo_codice": "M01",
+  "modulo_nome": "Cinematica",
+  "elementi": [
+    { "id": "M01-DA-001", "domanda": "Spiega la differenza tra velocità media e velocità istantanea.", "risposta_modello": "La velocità media è $\\Delta x / \\Delta t$ su un intervallo finito. La velocità istantanea è il limite per $\\Delta t \\to 0$, cioè la derivata $dx/dt$: la pendenza della tangente al grafico $x(t)$.", "punti_chiave": ["rapporto su un intervallo finito", "limite / derivata", "interpretazione grafica"], "tag": ["velocità"] }
+  ]
+}
