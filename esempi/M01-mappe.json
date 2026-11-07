@@ -1,0 +1,49 @@
+{
+  "versione_schema": 1,
+  "tipo_file": "mappa",
+  "esame": "Fisica 1",
+  "modulo_codice": "M01",
+  "modulo_nome": "Cinematica",
+  "elementi": [
+    {
+      "id": "M01-MP-001",
+      "titolo": "Mappa della cinematica",
+      "tipo": "concetti",
+      "radice": {
+        "testo": "Cinematica",
+        "figli": [
+          { "testo": "Grandezze", "figli": [
+            { "testo": "Posizione $x(t)$" },
+            { "testo": "Velocità $v = dx/dt$", "nota": "Derivata della posizione: pendenza del grafico x(t)." },
+            { "testo": "Accelerazione $a = dv/dt$" } ] },
+          { "testo": "Moto rettilineo", "figli": [
+            { "testo": "Uniforme", "figli": [ { "testo": "$x = x_0 + vt$" } ] },
+            { "testo": "Uniformemente accelerato", "figli": [
+              { "testo": "$x = x_0 + v_0 t + \\frac{1}{2}at^2$" },
+              { "testo": "$v^2 = v_0^2 + 2a\\Delta x$" } ] },
+            { "testo": "Caduta libera", "nota": "Caso particolare con $a = -g$." } ] },
+          { "testo": "Moto nel piano", "figli": [
+            { "testo": "Proiettile", "figli": [ { "testo": "Moti indipendenti su x e y" }, { "testo": "Gittata $\\frac{v_0^2 \\sin 2\\theta}{g}$" } ] },
+            { "testo": "Circolare uniforme", "figli": [ { "testo": "$a_c = v^2/R$" }, { "testo": "$v = \\omega R$" } ] } ] },
+          { "testo": "Vettori", "figli": [ { "testo": "Componenti cartesiane" }, { "testo": "Versori $\\hat{i}, \\hat{j}$" } ] }
+        ]
+      }
+    },
+    {
+      "id": "M01-MP-002",
+      "titolo": "Come impostare un esercizio",
+      "tipo": "esercizi",
+      "radice": {
+        "testo": "Il moto avviene lungo una retta?",
+        "figli": [
+          { "etichetta": "Sì", "testo": "L’accelerazione è costante?", "figli": [
+            { "etichetta": "Sì", "testo": "Usa le leggi del moto uniformemente accelerato", "nota": "Scegli l’equazione che contiene le grandezze note e quella da trovare." },
+            { "etichetta": "No", "testo": "Integra: $v = \\int a\\,dt$, poi $x = \\int v\\,dt$" } ] },
+          { "etichetta": "No, è nel piano", "testo": "La traiettoria è una circonferenza?", "figli": [
+            { "etichetta": "Sì", "testo": "Moto circolare: usa $a_c = v^2/R$ e $v = \\omega R$" },
+            { "etichetta": "No", "testo": "Scomponi su x e y e risolvi i due moti separati", "nota": "Per un proiettile: x uniforme, y uniformemente accelerato con $-g$." } ] }
+        ]
+      }
+    }
+  ]
+}

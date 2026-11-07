@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS modules (
   UNIQUE (exam_id, code)
 );
 
--- kind: flashcard | chiusa | aperta
+-- kind: flashcard | chiusa | aperta | mappa
 -- last_result: so | ripassare | giusta | parziale | sbagliata
 CREATE TABLE IF NOT EXISTS items (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

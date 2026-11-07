@@ -1,0 +1,27 @@
+{
+  "versione_schema": 1,
+  "tipo_file": "mappa",
+  "ambito": "esame",
+  "esame": "Fisica 1",
+  "elementi": [
+    {
+      "id": "ESAME-MP-001",
+      "titolo": "Mappa di Fisica 1",
+      "tipo": "concetti",
+      "radice": {
+        "testo": "Fisica 1",
+        "figli": [
+          { "testo": "Strumenti", "figli": [ { "testo": "Preliminari matematici", "nota": "Derivate, integrali, ordini di grandezza" }, { "testo": "Vettori" } ] },
+          { "testo": "Descrivere il moto", "figli": [ { "testo": "Cinematica" }, { "testo": "Moti relativi" } ] },
+          { "testo": "Cause del moto", "figli": [ { "testo": "Dinamica e forze" }, { "testo": "Gravitazione" } ] },
+          { "testo": "Leggi di conservazione", "figli": [ { "testo": "Lavoro ed energia" }, { "testo": "Quantità di moto e urti" }, { "testo": "Momento angolare" } ] },
+          { "testo": "Corpi estesi", "figli": [ { "testo": "Sistemi di punti" }, { "testo": "Corpo rigido" }, { "testo": "Statica" } ] }
+        ]
+      },
+      "collegamenti": [
+        { "da": "M01", "a": "M02", "testo": "I vettori servono per descrivere posizione, velocità e accelerazione." },
+        { "da": "M02", "a": "M03", "testo": "La seconda legge di Newton usa l’accelerazione definita in cinematica." }
+      ]
+    }
+  ]
+}

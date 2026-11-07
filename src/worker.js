@@ -4,6 +4,7 @@ const KIND_BY_FILE = {
   flashcard: "flashcard",
   domande_chiuse: "chiusa",
   domande_aperte: "aperta",
+  mappa: "mappa",
 };
 const SCORE = { so: 1, giusta: 1, parziale: 0.5, ripassare: 0, sbagliata: 0 };
 const VALID_RESULTS = Object.keys(SCORE);
@@ -12,6 +13,7 @@ const MODULE_STATS = `
   SUM(CASE WHEN i.kind='flashcard' THEN 1 ELSE 0 END) AS n_flashcard,
   SUM(CASE WHEN i.kind='chiusa' THEN 1 ELSE 0 END) AS n_chiuse,
   SUM(CASE WHEN i.kind='aperta' THEN 1 ELSE 0 END) AS n_aperte,
+  SUM(CASE WHEN i.kind='mappa' THEN 1 ELSE 0 END) AS n_mappe,
   SUM(CASE WHEN i.kind='flashcard' AND i.last_result='so' THEN 1 ELSE 0 END) AS flashcard_so,
   SUM(CASE WHEN i.last_result IN ('ripassare','sbagliata','parziale') THEN 1 ELSE 0 END) AS da_ripassare,
   AVG(CASE i.last_result WHEN 'so' THEN 1.0 WHEN 'giusta' THEN 1.0 WHEN 'parziale' THEN 0.5
@@ -75,9 +77,10 @@ async function handleApi(request, env, url) {
         WHERE m.exam_id = ? GROUP BY m.id ORDER BY m.ord, m.code`).bind(examId).all()).results;
       const totals = await db.prepare(`
         SELECT ${MODULE_STATS} FROM items i WHERE i.exam_id = ?`).bind(examId).first();
+      const examMaps = await db.prepare(`SELECT COUNT(*) AS n FROM items WHERE exam_id = ? AND module_id = 0 AND kind = 'mappa'`).bind(examId).first();
       const sessions = (await db.prepare(`
         SELECT * FROM sessions WHERE exam_id = ? ORDER BY created_at DESC, id DESC LIMIT 15`).bind(examId).all()).results;
-      return json({ exam, modules, totals, sessions });
+      return json({ exam, modules, totals, sessions, exam_maps: examMaps?.n || 0 });
     }
 
     // DELETE /api/exams/:id
@@ -107,10 +110,10 @@ async function handleApi(request, env, url) {
       const only = url.searchParams.get("only") === "1";
       const n = Math.min(Number(url.searchParams.get("n") || 500), 500);
       let sql = `SELECT i.*, m.code AS module_code, m.name AS module_name
-                 FROM items i JOIN modules m ON m.id = i.module_id WHERE i.exam_id = ?`;
+                 FROM items i LEFT JOIN modules m ON m.id = i.module_id WHERE i.exam_id = ?`;
       const args = [examId];
       if (kind) { sql += " AND i.kind = ?"; args.push(kind); }
-      if (moduleId) { sql += " AND i.module_id = ?"; args.push(Number(moduleId)); }
+      if (moduleId !== null && moduleId !== "") { sql += " AND i.module_id = ?"; args.push(Number(moduleId)); }
       if (only) sql += " AND i.last_result IN ('ripassare','sbagliata','parziale')";
       sql += " ORDER BY i.box ASC, RANDOM() LIMIT ?";
       args.push(n);
@@ -176,7 +179,9 @@ async function handleApi(request, env, url) {
 
 async function importFile(db, exam, f) {
   if (!f || typeof f !== "object") return { ok: false, messaggio: "File non valido" };
-  const warn = f.esame && f.esame.trim().toLowerCase() !== exam.title.trim().toLowerCase()
+  const norm = (x) => String(x || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const a = norm(f.esame), t = norm(exam.title);
+  const warn = a && !t.includes(a) && !a.includes(t)
     ? `Il file dice esame “${f.esame}”, importato comunque in “${exam.title}”.` : null;
 
   // File dei moduli
@@ -193,6 +198,23 @@ async function importFile(db, exam, f) {
     return { ok: true, messaggio: `${list.length} moduli pronti`, avviso: warn };
   }
 
+  // Mappa complessiva dell'esame (non legata a un modulo)
+  if (f.tipo_file === "mappa" && (f.ambito === "esame" || !f.modulo_codice)) {
+    const elementi = Array.isArray(f.elementi) ? f.elementi : [];
+    if (!elementi.length) return { ok: false, messaggio: "Il file non contiene mappe" };
+    const existing = new Set((await db.prepare("SELECT item_key FROM items WHERE exam_id = ?").bind(exam.id).all()).results.map((r) => r.item_key));
+    let nuovi = 0;
+    const stmts = elementi.map((el, idx) => {
+      const key = String(el.id || `ESAME-MP-${String(idx + 1).padStart(3, "0")}`);
+      if (!existing.has(key)) nuovi++;
+      return db.prepare(`INSERT INTO items (exam_id, module_id, kind, item_key, data) VALUES (?, 0, 'mappa', ?, ?)
+                         ON CONFLICT (exam_id, item_key) DO UPDATE SET data = excluded.data, module_id = 0, kind = 'mappa'`)
+        .bind(exam.id, key, JSON.stringify(el));
+    });
+    await runChunks(db, stmts);
+    return { ok: true, messaggio: `Mappa dell’esame: ${nuovi ? "caricata" : "aggiornata"}`, avviso: warn };
+  }
+
   // File di contenuti
   const kind = KIND_BY_FILE[f.tipo_file];
   if (!kind) return { ok: false, messaggio: `tipo_file “${f.tipo_file}” non riconosciuto` };
@@ -205,7 +227,7 @@ async function importFile(db, exam, f) {
                     ON CONFLICT (exam_id, code) DO NOTHING`).bind(exam.id, code, f.modulo_nome || code).run();
   const mod = await db.prepare("SELECT id, name FROM modules WHERE exam_id = ? AND code = ?").bind(exam.id, code).first();
 
-  const prefix = { flashcard: "FC", chiusa: "DC", aperta: "DA" }[kind];
+  const prefix = { flashcard: "FC", chiusa: "DC", aperta: "DA", mappa: "MP" }[kind];
   const existing = new Set((await db.prepare("SELECT item_key FROM items WHERE exam_id = ?").bind(exam.id).all())
     .results.map((r) => r.item_key));
   let nuovi = 0;
@@ -218,10 +240,10 @@ async function importFile(db, exam, f) {
       .bind(exam.id, mod.id, kind, key, JSON.stringify(el));
   });
   await runChunks(db, stmts);
-  const nomi = { flashcard: "flashcard", chiusa: "domande chiuse", aperta: "domande aperte" };
+  const nomi = { flashcard: "flashcard", chiusa: "domande chiuse", aperta: "domande aperte", mappa: "mappe" };
   return {
     ok: true,
-    messaggio: `${code} ${mod.name}: ${nuovi} ${nomi[kind]} nuove, ${elementi.length - nuovi} aggiornate`,
+    messaggio: `${mod.name}, ${nomi[kind]}: ${nuovi} ${nuovi === 1 ? "nuovo" : "nuovi"}, ${elementi.length - nuovi} ${elementi.length - nuovi === 1 ? "aggiornato" : "aggiornati"}`,
     avviso: warn,
   };
 }
